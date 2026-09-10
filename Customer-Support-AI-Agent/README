@@ -1,4 +1,21 @@
- 1. 🤖 AI Customer Support Agent using RAG
+# Agent-AI
+
+A collection of practical **Agentic AI, Generative AI, RAG, and AI Automation projects** built using Python, n8n, OpenAI, Pinecone, Google services, and workflow automation.
+
+These projects focus on solving real-world problems using AI Agents, Retrieval-Augmented Generation (RAG), vector databases, document processing, automated decision-making, and business workflow automation.
+
+---
+
+## 🚀 Projects
+
+This repository currently contains the following projects:
+
+1. **AI Customer Support Agent using RAG**
+2. **AI Resume Screening & Candidate Ranking**
+
+---
+
+# 1. 🤖 AI Customer Support Agent using RAG
 
 An AI-powered customer support chatbot built using **n8n, OpenAI, Pinecone, Google Drive, and Retrieval-Augmented Generation (RAG)**.
 
