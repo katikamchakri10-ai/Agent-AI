@@ -1,0 +1,368 @@
+{
+  "name": "resume",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Resume",
+        "formDescription": "please fill the form",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name"
+            },
+            {
+              "fieldLabel": "email",
+              "fieldType": "email"
+            },
+            {
+              "fieldLabel": "University  Name"
+            },
+            {
+              "fieldLabel": "Resume",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -768,
+        -112
+      ],
+      "id": "a72fead4-d821-419d-b83e-05a731cf3d16",
+      "name": "On form submission",
+      "webhookId": "bbea3307-541e-4fec-9309-7bb347a89ded"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "Resume",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -544,
+        -112
+      ],
+      "id": "58ca8a52-54bd-4574-8b55-5efb29f69200",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are screening a candidate for an AI Engineer position.\n\nJOB DESCRIPTION:\n\nWe are looking for an AI Engineer to design, develop, and deploy AI-powered applications and automation solutions.\n\nThe candidate should be able to:\n- Develop AI/ML applications using Python.\n- Work with Large Language Models (LLMs).\n- Build Retrieval-Augmented Generation (RAG) applications.\n- Work with embeddings and vector databases.\n- Develop AI agents and AI-powered automation workflows.\n- Integrate AI models with APIs and external services.\n- Work with REST APIs and JSON data.\n- Build and maintain data processing pipelines.\n- Understand prompt engineering and LLM application development.\n- Work with databases and SQL.\n- Debug and optimize AI applications.\n- Deploy AI applications to production environments.\n\nREQUIRED SKILLS:\n\n- Python\n- Machine Learning\n- Generative AI\n- LLMs\n- RAG\n- Prompt Engineering\n- AI Agents\n- Embeddings\n- Vector Databases\n- LangChain or similar AI frameworks\n- REST APIs\n- SQL\n- Git\n- Basic Cloud knowledge\n- n8n or workflow automation\n\nEvaluate the candidate's resume against this job description and required skills.\nResume:\n{{ $('On form submission').item.json.Resume }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an AI Resume Screening Assistant for a recruitment team.\n\nYour task is to evaluate a candidate's resume against a given job description.\n\nAnalyze ONLY job-relevant information such as:\n- Technical skills\n- Programming languages\n- Tools and technologies\n- Relevant work experience\n- Projects\n- Education relevant to the role\n- Certifications\n- Years of relevant experience\n- Required skills mentioned in the job description\n\nDo NOT consider or infer protected or personal characteristics such as:\n- Age\n- Gender\n- Race or ethnicity\n- Religion\n- Nationality\n- Disability or medical information\n- Marital status\n- Photograph or physical appearance\n- Any other unrelated personal characteristic\n\nCalculate a candidate score from 0 to 100 based only on job-related qualifications.\n\nUse this scoring guideline:\n- 80–100 = Strong Match / Shortlisted\n- 60–79 = Moderate Match / Review\n- 0–59 = Weak Match / Rejected\n\nConsider the following factors:\n- Required skills match: 40 points\n- Relevant experience: 25 points\n- Projects and practical experience: 20 points\n- Education/certifications relevant to the role: 10 points\n- Additional relevant skills: 5 points\n\nDo not invent information that is not present in the resume.\n\nReturn the result in valid JSON only."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -320,
+        -112
+      ],
+      "id": "902f8fa6-f107-4d1b-b9e9-3066eb057eaf",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -464,
+        96
+      ],
+      "id": "ca2a460f-63b2-42c8-b4b0-d4c259a81c2b",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "mJB3JMxfMsZ4YkdG",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"candidate_name\": \"Rahul Kumar\",\n  \"skills\": [\n    \"Python\",\n    \"SQL\",\n    \"Machine Learning\",\n    \"Generative AI\",\n    \"RAG\",\n    \"n8n\"\n  ],\n  \"matched_skills\": [\n    \"Python\",\n    \"SQL\",\n    \"Generative AI\",\n    \"RAG\",\n    \"n8n\"\n  ],\n  \"missing_skills\": [\n    \"AWS\",\n    \"Git\"\n  ],\n  \"relevant_experience\": \"Built AI and automation applications using Python and n8n.\",\n  \"relevant_projects\": \"Developed a RAG-based customer support application using OpenAI, embeddings, and Pinecone.\",\n  \"education\": \"B.Tech in Computer Science\",\n  \"score\": 85,\n  \"status\": \"Shortlisted\",\n  \"reasoning\": \"The candidate has strong experience in Python, Generative AI, RAG, vector databases, and workflow automation, making them a strong match for the AI Engineer role.\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -160,
+        96
+      ],
+      "id": "7245a69e-1f19-4e94-be6f-571d3a614078",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output.score }}",
+                    "rightValue": 80,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    },
+                    "id": "29936ccb-0e11-41e5-8166-bdd7f5ffa12d"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "shortlisted"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "ab4cc3db-5295-4074-9ab2-4bdf56e9250e",
+                    "leftValue": "={{ $json.output.score }}",
+                    "rightValue": 60,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Revewing"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "fd1d7252-a500-4150-a658-b81d60e5ef4a",
+                    "leftValue": "={{ $json.output.score }}",
+                    "rightValue": 59,
+                    "operator": {
+                      "type": "number",
+                      "operation": "lt"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Rejected"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        48,
+        -112
+      ],
+      "id": "c5df743c-3069-413d-bed8-c6f0192521e8",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json.email }}",
+        "subject": "Shortlisted",
+        "emailType": "text",
+        "message": "=According to your resume score your shortlisted Score: {{ $json.output.score }}\nReason:{{ $json.output.reasoning }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        272,
+        -144
+      ],
+      "id": "b6454833-2244-40c0-9a64-f12d3640a8e8",
+      "name": "Send a message",
+      "webhookId": "09fcb41a-d800-4f5c-b231-0d4001f74529",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GHyVEt5exx6VdqOC",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json.email }}",
+        "subject": "Reviewing",
+        "emailType": "text",
+        "message": "=According to your resume score your are under reviewing Score: {{ $('AI Agent').item.json.output.score }}\nReason:{{ $('AI Agent').item.json.output.reasoning }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        0
+      ],
+      "id": "b84e6ae4-b1b3-4ee3-b2af-faecdf36f1ae",
+      "name": "Send a message1",
+      "webhookId": "09fcb41a-d800-4f5c-b231-0d4001f74529",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GHyVEt5exx6VdqOC",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json.email }}",
+        "subject": "Rejected",
+        "emailType": "text",
+        "message": "=According to your resume score your Rejected Score: {{ $('AI Agent').item.json.output.score }}\nReason:{{ $('AI Agent').item.json.output.reasoning }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        144
+      ],
+      "id": "2cd53a44-7dae-48da-9b0f-672e916f3763",
+      "name": "Send a message2",
+      "webhookId": "09fcb41a-d800-4f5c-b231-0d4001f74529",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GHyVEt5exx6VdqOC",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "18291fc8-db66-4951-a468-6f895ed03188",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9e34e7c78ec95cf871c1c0c3bb5a0f3f58eb66d177c981173a0dce986d838892"
+  },
+  "nodeGroups": [],
+  "id": "SRZp5NKy4LenL8WH",
+  "tags": []
+}
