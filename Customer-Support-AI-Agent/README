@@ -1,1 +1,63 @@
+ 1. 🤖 AI Customer Support Agent using RAG
 
+An AI-powered customer support chatbot built using **n8n, OpenAI, Pinecone, Google Drive, and Retrieval-Augmented Generation (RAG)**.
+
+The system allows users to ask questions about documents stored in a knowledge base. Documents are processed, converted into embeddings, stored in Pinecone, and retrieved by an AI Agent when answering user questions.
+
+---
+
+## 🎯 Problem Statement
+
+Traditional customer support systems often require users to search through documentation or wait for a support representative.
+
+This project uses RAG to create an AI Customer Support Agent that can retrieve relevant information from company documents and generate natural-language answers.
+
+---
+
+## 🏗️ Customer Support RAG Architecture
+
+```text
+                KNOWLEDGE BASE
+                      |
+                      v
+             Google Drive Trigger
+                      |
+                      v
+                Download File
+                      |
+                      v
+              Default Data Loader
+                      |
+                      v
+          Recursive Character
+              Text Splitter
+                      |
+                      v
+             OpenAI Embeddings
+                      |
+                      v
+            Pinecone Vector Store
+                      |
+                      |
+                KNOWLEDGE BASE
+                      |
+------------------------------------------------
+                      |
+                  USER QUERY
+                      |
+                      v
+                 Chat Trigger
+                      |
+                      v
+                   AI Agent
+                 /    |     \
+                /     |      \
+               v      v       v
+            OpenAI  Memory  Pinecone
+             Model            Tool
+                              |
+                              v
+                     Relevant Documents
+                              |
+                              v
+                         Final Answer
